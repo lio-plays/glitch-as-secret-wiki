@@ -1,4 +1,4 @@
-# glitch-wiki
+# glitch-as-secret-wiki
 
 ## A wiki which you edit in glitch
 
@@ -12,9 +12,9 @@ A primitive wiki which uses glitch for editing. pages have a link which opens th
 
 ## View Source
 
-Github -> Glitch: [Remix github/lio-plays/glitch-wiki on Glitch](https://glitch.com/edit/#!/import/github/lio-plays/glitch-wiki)
+Github -> Glitch: [Remix github/lio-plays/glitch-as-secret-wiki on Glitch](https://glitch.com/edit/#!/import/github/lio-plays/glitch-as-secret-wiki)
 
-Elsewhere -> Github: view the github repo [lio-plays/glitch-wiki](https://github.com/lio-plays/glitch-wiki)
+Elsewhere -> Github: view the github repo [lio-plays/glitch-as-secret-wiki](https://github.com/lio-plays/glitch-as-secret-wiki)
 
 ### Generate GitHub Import Button for own remixes
 
