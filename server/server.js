@@ -4,6 +4,7 @@ var Strategy = require("passport-local").Strategy;
 var db = require("./db");
 
 const fsp = require("fs").promises;
+const auth = require("connect-ensure-login");
 
 // Configure the local strategy for use by Passport.
 //
@@ -90,10 +91,7 @@ app.get("/logout", function(req, res) {
   res.redirect("/");
 });
 
-app.get("/profile", require("connect-ensure-login").ensureLoggedIn(), function(
-  req,
-  res
-) {
+app.get("/profile", auth.ensureLoggedIn(), function(req, res) {
   res.render("profile", { user: req.user });
 });
 
@@ -114,6 +112,22 @@ async function raw(req, res, type) {
 app.get("/", function(req, res) {
   html(req, res, "/index.html");
 });
+
+// protected
+
+app.get(/\/private\/.*\.html/, auth.ensureLoggedIn(), function(req, res) {
+  html(req, res, req.path);
+});
+
+app.get(/\/private\/.*\.js$/, auth.ensureLoggedIn(), function(req, res) {
+  raw(req, res, ".js");
+});
+
+app.get(/\/private\/.*\.md$/, auth.ensureLoggedIn(), function(req, res) {
+  raw(req, res, ".txt");
+});
+
+// public
 
 app.get(/.*\.html$/, function(req, res) {
   html(req, res, req.path);
