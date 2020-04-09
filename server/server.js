@@ -123,7 +123,7 @@ app.get(/\/private\/.*\.js$/, auth.ensureLoggedIn(), function(req, res) {
   raw(req, res, ".js");
 });
 
-app.get(/\/private\/.*\.md$/, auth.ensureLoggedIn(), function(req, res) {
+app.get(/\/private\/.*\.md$/, auth.ensureLoggedIn("/server/public/login.md"), function(req, res) {
   raw(req, res, ".txt");
 });
 
