@@ -80,7 +80,10 @@ app.get("/login", function(req, res) {
 
 app.post(
   "/login",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", {
+    successReturnToOrRedirect: "/",
+    failureRedirect: "/login"
+  }),
   function(req, res) {
     res.redirect("/");
   }
@@ -95,11 +98,15 @@ app.get("/profile", auth.ensureLoggedIn(), function(req, res) {
   res.render("profile", { user: req.user });
 });
 
-async function html(req, res, subpath) {
+async function html(req, res, subpath, opts) {
   const path = __dirname + "/.." + subpath;
   const content1 = await fsp.readFile(path, "utf8");
   const content = "" + content1.match(/\<body\>(.*)\<\/body\>/s)[1];
-  res.render("home", { user: req.user, content: content });
+  res.render("home", {
+    user: req.user,
+    content: content,
+    secret: opts && opts.secret
+  });
 }
 
 async function raw(req, res, type) {
@@ -115,17 +122,21 @@ app.get("/", function(req, res) {
 
 // protected
 
-app.get(/\/private\/.*\.html/, auth.ensureLoggedIn(), function(req, res) {
-  html(req, res, req.path);
+app.get(/\/private\/.*\.html/, function(req, res) {
+  html(req, res, req.path, { secret: true });
 });
 
 app.get(/\/private\/.*\.js$/, auth.ensureLoggedIn(), function(req, res) {
   raw(req, res, ".js");
 });
 
-app.get(/\/private\/.*\.md$/, auth.ensureLoggedIn("/server/public/login.md"), function(req, res) {
-  raw(req, res, ".txt");
-});
+app.get(
+  /\/private\/.*\.md$/,
+  auth.ensureLoggedIn("/server/public/login.md"),
+  function(req, res) {
+    raw(req, res, ".txt");
+  }
+);
 
 // public
 
