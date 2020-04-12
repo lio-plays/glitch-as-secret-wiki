@@ -16,5 +16,12 @@
   },
   "engines": {
     "node": "12.x"
-  }
+  },
+  "name": "glitch-as-secret-wiki",
+  "description": "## A wiki which you edit in glitch",
+  "version": "0.0.0",
+  "main": "server/index.js",
+  "devDependencies": {},
+  "author": "Lio",
+  "license": "AGPL-3.0-or-later"
 }
