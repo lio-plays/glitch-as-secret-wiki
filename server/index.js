@@ -114,9 +114,13 @@ exports.run = function run(opts) {
     });
   }
 
-  async function raw(req, res, type) {
+  async function raw(req, res, type, notLoggedInContent) {
     const path = root + req.path;
-    const content = await fsp.readFile(path, "utf8");
+    if (notLoggedInContent && !req.user) {
+      var content = notLoggedInContent;
+    } else {
+    var content = await fsp.readFile(path, "utf8");
+    }
     res.type(type);
     res.send(content);
   }
@@ -132,14 +136,13 @@ exports.run = function run(opts) {
   });
 
   app.get(/\/private\/.*\.js$/, auth.ensureLoggedIn(), function(req, res) {
-    raw(req, res, ".js");
+    raw(req, res, ".js", "alert('private, no login, no javascript'");
   });
 
   app.get(
     /\/private\/.*\.md$/,
-    auth.ensureLoggedIn(__dirname + "/public/login.md"),
     function(req, res) {
-      raw(req, res, ".txt");
+      raw(req, res, ".txt", "# private and not logged in");
     }
   );
 
