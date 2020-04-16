@@ -102,21 +102,36 @@ app.get("/profile", auth.ensureLoggedIn(), function(req, res) {
 exports.run = function run(opts) {
   //
   const root = opts.root;
-  
-  async function html(req, res, subpath, opts) {
+
+  async function html(req, res, subpath, notLoggedInContent) {
     const path = root + subpath;
-    const content1 = await fsp.readFile(path, "utf8");
-    const content = "" + content1.match(/\<body\>(.*)\<\/body\>/s)[1];
-    res.render("home", {
-      user: req.user,
-      content: content,
-      secret: opts && opts.secret
-    });
+    if (notLoggedInContent && !req.user) {
+      var content = await fsp.readFile(
+        __dirname + "/html/not-logged-in.html",
+        "utf8"
+      );
+    } else {
+      var content = await fsp.readFile(path, "utf8");
+    }
+    if (req.user) {
+      var login = `<a href="/profile"><b>${req.user.username.replace(
+        /</g,
+        "&lt;"
+      )}'s menu</b></a>`;
+    } else {
+      var login = `<a href="/login">Login</a>`;
+    }
+    content = content.replace("$LOGIN$", login);
+    res.send(content);
   }
 
-  async function raw(req, res, type) {
+  async function raw(req, res, type, notLoggedInContent) {
     const path = root + req.path;
-    const content = await fsp.readFile(path, "utf8");
+    if (notLoggedInContent && !req.user) {
+      var content = notLoggedInContent;
+    } else {
+      var content = await fsp.readFile(path, "utf8");
+    }
     res.type(type);
     res.send(content);
   }
@@ -128,20 +143,16 @@ exports.run = function run(opts) {
   // protected
 
   app.get(/\/private\/.*\.html/, function(req, res) {
-    html(req, res, req.path, { secret: true });
+    html(req, res, req.path, true);
   });
 
   app.get(/\/private\/.*\.js$/, auth.ensureLoggedIn(), function(req, res) {
-    raw(req, res, ".js");
+    raw(req, res, ".js", "alert('private, no login, no javascript'");
   });
 
-  app.get(
-    /\/private\/.*\.md$/,
-    auth.ensureLoggedIn(__dirname + "/public/login.md"),
-    function(req, res) {
-      raw(req, res, ".txt");
-    }
-  );
+  app.get(/\/private\/.*\.md$/, function(req, res) {
+    raw(req, res, ".txt", "# private and not logged in");
+  });
 
   // public
 
