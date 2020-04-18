@@ -1,4 +1,5 @@
 {
+  "version": "0.0.2",
   "scripts": {
     "start": "node server/server.js",
     "install": "node server/install.js"
@@ -8,7 +9,7 @@
     "connect-ensure-login": "^0.1.1",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
-    "express-session": "^1.16.1",
+    "express-session": "^1.17.1",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
@@ -19,7 +20,6 @@
   },
   "name": "glitch-as-secret-wiki",
   "description": "## A wiki which you edit in glitch",
-  "version": "0.0.1",
   "main": "server/index.js",
   "devDependencies": {},
   "author": "Lio",

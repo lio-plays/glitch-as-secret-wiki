@@ -7,15 +7,19 @@ A primitive wiki which uses glitch for editing. pages have a link which opens th
 ## Features: 
 * go from a glitch hosted page to the sourcefile in glitch, edit there
 * do this also for markdown files
-* no own login setup required
 * do markdown clientside
+* no own login setup required, but a primitive one available
 * public and private folder
 
 ## View Source
 
-Github -> Glitch: [Remix github/lio-plays/glitch-as-secret-wiki on Glitch](https://glitch.com/edit/#!/import/github/lio-plays/glitch-as-secret-wiki)
+[Remix Github on Glitch](https://glitch.com/edit/#!/import/github/lio-plays/glitch-as-secret-wiki)
 
-Elsewhere -> Github: view the github repo [lio-plays/glitch-as-secret-wiki](https://github.com/lio-plays/glitch-as-secret-wiki)
+[Project Glitch](https://familiar-caramel-organ.glitch.me/index.html)
+
+[Github repo](https://github.com/lio-plays/glitch-as-secret-wiki)
+
+## Random tips
 
 ### Generate GitHub Import Button for own remixes
 
