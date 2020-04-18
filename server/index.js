@@ -5,6 +5,8 @@ var db = require("./db");
 
 const fsp = require("fs").promises;
 const auth = require("connect-ensure-login");
+const session = require("express-session");
+var FileStore = require("session-file-store")(session);
 
 // Configure the local strategy for use by Passport.
 //
@@ -60,48 +62,50 @@ app.set("view engine", "ejs");
 // logging, parsing, and session handling.
 app.use(require("morgan")("combined"));
 app.use(require("body-parser").urlencoded({ extended: true }));
-app.use(
-  require("express-session")({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: false
-  })
-);
-
-// Initialize Passport and restore authentication state, if any, from the
-// session.
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Define routes.
-app.get("/login", function(req, res) {
-  res.render("login");
-});
-
-app.post(
-  "/login",
-  passport.authenticate("local", {
-    successReturnToOrRedirect: "/",
-    failureRedirect: "/login"
-  }),
-  function(req, res) {
-    res.redirect("/");
-  }
-);
-
-app.get("/logout", function(req, res) {
-  req.logout();
-  res.redirect("/");
-});
-
-app.get("/profile", auth.ensureLoggedIn(), function(req, res) {
-  res.render("profile", { user: req.user });
-});
 
 //
 exports.run = function run(opts) {
   //
   const root = opts.root;
+
+  app.use(
+    session({
+      store: new FileStore({ path: root + "/.data/sessions" }),
+      secret: "keyboard cat",
+      resave: false,
+      saveUninitialized: false
+    })
+  );
+
+  // Initialize Passport and restore authentication state, if any, from the
+  // session.
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Define routes.
+  app.get("/login", function(req, res) {
+    res.render("login");
+  });
+
+  app.post(
+    "/login",
+    passport.authenticate("local", {
+      successReturnToOrRedirect: "/",
+      failureRedirect: "/login"
+    }),
+    function(req, res) {
+      res.redirect("/");
+    }
+  );
+
+  app.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/");
+  });
+
+  app.get("/profile", auth.ensureLoggedIn(), function(req, res) {
+    res.render("profile", { user: req.user });
+  });
 
   async function html(req, res, subpath, notLoggedInContent) {
     const path = root + subpath;
