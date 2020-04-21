@@ -72,8 +72,15 @@ exports.run = function run(opts) {
     session({
       store: new FileStore({ path: root + "/.data/sessions" }),
       secret: "keyboard cat",
+      
+      // testing settings copied from session-file-store 
+      resave: true,
+      saveUninitialized: true
+
+      /* old
       resave: false,
       saveUninitialized: false
+      */
     })
   );
 
