@@ -13,6 +13,7 @@ async function fillPage() {
   const savepath = path + location.hash;
   localStorage.setItem("lastPath", savepath);
   urltag.textContent = `${savepath} _ @${project}`;
+  document.title = `${savepath}@${project}`;
 
   // url from here to glitch-editor
 
