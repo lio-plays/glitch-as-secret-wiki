@@ -71,16 +71,8 @@ exports.run = function run(opts) {
   app.use(
     session({
       store: new FileStore({ path: root + "/.data/sessions" }),
-      secret: "keyboard cat",
-      
-      // testing settings copied from session-file-store 
-      resave: true,
-      saveUninitialized: true
-
-      /* old
-      resave: false,
-      saveUninitialized: false
-      */
+      secret: process.env.SECRET // same as password for now
+      // reSave, saveUninitialized default
     })
   );
 
