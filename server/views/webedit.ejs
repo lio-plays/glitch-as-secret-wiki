@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Server Index</title>
+    <title>Webedit <%=editPath%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       id="favicon"
@@ -10,42 +10,25 @@
     />
   </head>
   <body>
-    <div>
-      <a href="/index.html">Home</a> | $LOGIN$ | Edit
-      <a href="" id="url" target="_blank"></a>
-    </div>
-    <div id="html"></div>
+    <script>
+      {
+        const p = location.href.match(/\/\/(.*?)(\/.*)/)[2];
+        console.log(p);
+        localStorage.setItem("lastPath", p);
+      }
+    </script>
 
-    <pre id="markdown" hidden="true">
----
-Links:
-[About](/#/README.md)
+    <a href="/index.html">Home</a> |
+    <a href="<%=myUrl%>"><%=myUrl%></a>
+    <hr />
+    <p>
+      <a href="<%=editPath%>"><%=editPath%></a>
+    </p>
 
-# Testing:
+    <form action="/webedit" method="post">
+      <textarea><%=fileContent%></textarea>
+    </form>
 
-[Other page](other-page.html)
-
-["/" again](/)
-
-[test /other-markdown.md](/#/other-markdown.md)
-
-[private/index](private/index.html)
-
-[private/markdown](/#/private/markdown.md)
-
----
-  
-</pre
-    >
-    <script
-      src="https://cdn.jsdelivr.net/npm/markdown-it@10.0.0/dist/markdown-it.min.js"
-      integrity="sha256-YASERpEeN8gRNr/Fy4Km34WGFqIq1h6HkJMAQnVHlhk="
-      crossorigin="anonymous"
-    ></script>
-    <script src="/index.js"></script>
-
-    <!-- include the Glitch button to show what the webpage is about and
-          to make it easier for folks to view source and remix -->
     <div
       class="glitchButton"
       style="position:fixed;top:0.3em;right:20px;"

@@ -143,13 +143,22 @@ exports.run = function run(opts) {
     html(req, res, "/index.html");
   });
 
+  app.get("/webedit", async function(req, res) {
+    //const fc = await fsp.readFile(req.path, "utf8");
+    res.render("webedit", {
+      myUrl: req.path,
+      editPath: req.query.file,
+      fileContent: "fc"
+    });
+  });
+
   // protected
 
   app.get(/\/private\/.*\.html/, function(req, res) {
     html(req, res, req.path, true);
   });
 
-  app.get(/\/private\/.*\.js$/, auth.ensureLoggedIn(), function(req, res) {
+  app.get(/\/private\/.*\.js$/, function(req, res) {
     raw(req, res, ".js", "alert('private, no login, no javascript'");
   });
 
@@ -169,6 +178,22 @@ exports.run = function run(opts) {
 
   app.get(/.*\.md$/, function(req, res) {
     raw(req, res, ".txt");
+  });
+
+  app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    if (!req.user) {
+      var msg = 'Something broke! <a href="/index.html">Home</a>';
+    } else {
+      var msg = `Something broke! <a href="/index.html">Home</a><hr>You are logged in, the error:<pre>${err.stack}</pre>`;
+    }
+    res.status(500).send(msg);
+  });
+
+  app.use(function(req, res, next) {
+    res
+      .status(404)
+      .send('Sorry can\'t find that! <a href="/index.html">Home</a>');
   });
 
   app.listen(3000);
