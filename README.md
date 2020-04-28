@@ -19,6 +19,14 @@ A primitive wiki which uses glitch for editing. pages have a link which opens th
 
 [Github repo](https://github.com/lio-plays/glitch-as-secret-wiki)
 
+## commandlines
+
+```
+# update server from github
+
+pnpm update&&refresh
+```
+
 ## Random tips
 
 ### Generate GitHub Import Button for own remixes
