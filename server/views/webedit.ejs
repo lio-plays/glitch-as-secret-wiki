@@ -21,11 +21,15 @@
     <a href="/index.html">Home</a> |
     <a href="<%=myUrl%>"><%=myUrl%></a>
     <hr />
-    <p>
-      <a href="<%=editPath%>"><%=editPath%></a>
-    </p>
+    <p>Back: <a href="<%=editPath%>"><%=editPath%></a></p>
 
     <form action="/webedit" method="post">
+      <p>
+        <input type="submit" value="Submit" />
+      </p>
+      <p>
+        <input type="text" id="path" name="path" value="<%=editPath%>" />
+      </p>
       <textarea><%=fileContent%></textarea>
     </form>
 

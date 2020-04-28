@@ -143,7 +143,8 @@ exports.run = function run(opts) {
     html(req, res, "/index.html");
   });
 
-  app.get("/webedit", async function(req, res) {
+  app.get("/webedit", auth.ensureLoggedIn(),
+          async function(req, res) {
     //const fc = await fsp.readFile(req.path, "utf8");
     res.render("webedit", {
       myUrl: req.path,
