@@ -143,13 +143,12 @@ exports.run = function run(opts) {
     html(req, res, "/index.html");
   });
 
-  app.get("/webedit", auth.ensureLoggedIn(),
-          async function(req, res) {
-    //const fc = await fsp.readFile(req.path, "utf8");
+  app.get("/webedit", auth.ensureLoggedIn(), async function(req, res) {
+    const fc = await fsp.readFile(root + req.query.file, "utf8");
     res.render("webedit", {
       myUrl: req.path,
       editPath: req.query.file,
-      fileContent: "fc"
+      fileContent: fc
     });
   });
 

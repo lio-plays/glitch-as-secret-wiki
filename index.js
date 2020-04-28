@@ -15,10 +15,6 @@ async function fillPage() {
   urltag.textContent = `${savepath} _ @${project}`;
   document.title = `${savepath}@${project}`;
 
-  // webedit link
-  const webedittag = document.querySelector("#webedit");
-  webedittag.href = `/webedit?file=${encodeURIComponent(path)}`;
-
   // url from here to glitch-editor
 
   const glitchpath =
@@ -26,6 +22,10 @@ async function fillPage() {
       ? location.hash.substring(2)
       : path.substring(1);
   urltag.href = `https://glitch.com/edit/#!/${project}?path=${glitchpath}`;
+
+  // webedit link
+  const webedittag = document.querySelector("#webedit");
+  webedittag.href = `/webedit?file=${encodeURIComponent("/" + glitchpath)}`;
 
   // markdown
 
