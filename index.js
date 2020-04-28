@@ -15,6 +15,10 @@ async function fillPage() {
   urltag.textContent = `${savepath} _ @${project}`;
   document.title = `${savepath}@${project}`;
 
+  // webedit link
+  const webedittag = document.querySelector("#webedit");
+  webedittag.href = `/webedit?file=${encodeURIComponent(path)}`;
+
   // url from here to glitch-editor
 
   const glitchpath =
