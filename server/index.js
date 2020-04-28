@@ -147,10 +147,12 @@ exports.run = function run(opts) {
   // webedit
 
   app.get("/webedit", auth.ensureLoggedIn(), async function(req, res) {
+    const fn = req.query.file;
     const fc = await fsp.readFile(root + "/" + req.query.file, "utf8");
     res.render("webedit", {
       myUrl: req.path,
       editPath: req.query.file,
+      backPath: fn.match(/\.md$/) ? "/#" + fn : fn,
       fileContent: fc,
       date: new Date().getTime()
     });
