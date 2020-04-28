@@ -3,6 +3,7 @@ var passport = require("passport");
 var Strategy = require("passport-local").Strategy;
 var db = require("./db");
 
+const fs = require("fs");
 const fsp = require("fs").promises;
 const auth = require("connect-ensure-login");
 const session = require("express-session");
@@ -143,13 +144,33 @@ exports.run = function run(opts) {
     html(req, res, "/index.html");
   });
 
+  // webedit
+
+  app.get("/webedit", auth.ensureLoggedIn(), async function(req, res) {
+    const fn = req.query.file;
+    const fc = await fsp.readFile(root + "/" + req.query.file, "utf8");
+    res.render("webedit", {
+      myUrl: req.path,
+      editPath: req.query.file,
+      backPath: fn.match(/\.md$/) ? "/#" + fn : fn,
+      fileContent: fc,
+      date: new Date().getTime()
+    });
+  });
+
+  app.post("/webedit", auth.ensureLoggedIn(), function(req, res) {
+    fs.writeFileSync(root + req.body.path, req.body.text);
+    console.log(req.body.path + " saved");
+    res.redirect(`/webedit?file=${req.body.path}`);
+  });
+
   // protected
 
   app.get(/\/private\/.*\.html/, function(req, res) {
     html(req, res, req.path, true);
   });
 
-  app.get(/\/private\/.*\.js$/, auth.ensureLoggedIn(), function(req, res) {
+  app.get(/\/private\/.*\.js$/, function(req, res) {
     raw(req, res, ".js", "alert('private, no login, no javascript'");
   });
 
@@ -169,6 +190,22 @@ exports.run = function run(opts) {
 
   app.get(/.*\.md$/, function(req, res) {
     raw(req, res, ".txt");
+  });
+
+  app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    if (!req.user) {
+      var msg = 'Something broke! <a href="/index.html">Home</a>';
+    } else {
+      var msg = `Something broke! <a href="/index.html">Home</a><hr>You are logged in, the error:<pre>${err.stack}</pre>`;
+    }
+    res.status(500).send(msg);
+  });
+
+  app.use(function(req, res, next) {
+    res
+      .status(404)
+      .send('Sorry can\'t find that! <a href="/index.html">Home</a>');
   });
 
   app.listen(3000);

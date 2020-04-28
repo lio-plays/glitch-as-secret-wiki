@@ -23,6 +23,10 @@ async function fillPage() {
       : path.substring(1);
   urltag.href = `https://glitch.com/edit/#!/${project}?path=${glitchpath}`;
 
+  // webedit link
+  const webedittag = document.querySelector("#webedit");
+  webedittag.href = `/webedit?file=${encodeURIComponent("/" + glitchpath)}`;
+
   // markdown
 
   const markdowntag = document.querySelector("#markdown");

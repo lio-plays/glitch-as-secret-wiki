@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Webedit <%=editPath%></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://glitch.com/edit/favicon-app.ico"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <script>
+      {
+        const p = location.href.match(/\/\/(.*?)(\/.*)/)[2];
+        localStorage.setItem("lastPath", p);
+      }
+    </script>
+
+    <a href="/index.html">Home</a> |
+    <a href="<%=myUrl%>"><%=myUrl%></a>
+    <hr />
+    <form action="/webedit" method="post">
+      <p>
+        <input type="submit" value="Submit" />
+        <a href="<%=backPath%>"><%=backPath%></a>
+        <%=date%>
+      </p>
+      <p>
+        <input type="text" id="path" name="path" value="<%=editPath%>" />
+      </p>
+      <textarea id="text" name="text" autocomplete="off"><%=fileContent%></textarea>
+    </form>
+
+    <div
+      class="glitchButton"
+      style="position:fixed;top:0.3em;right:20px;"
+    ></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>
