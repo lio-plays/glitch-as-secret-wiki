@@ -3,6 +3,7 @@ var passport = require("passport");
 var Strategy = require("passport-local").Strategy;
 var db = require("./db");
 
+const fs = require("fs");
 const fsp = require("fs").promises;
 const auth = require("connect-ensure-login");
 const session = require("express-session");
@@ -143,13 +144,22 @@ exports.run = function run(opts) {
     html(req, res, "/index.html");
   });
 
+  // webedit
+
   app.get("/webedit", auth.ensureLoggedIn(), async function(req, res) {
-    const fc = await fsp.readFile(root + req.query.file, "utf8");
+    const fc = await fsp.readFile(root + "/" + req.query.file, "utf8");
     res.render("webedit", {
       myUrl: req.path,
       editPath: req.query.file,
-      fileContent: fc
+      fileContent: fc,
+      date: new Date().getTime()
     });
+  });
+
+  app.post("/webedit", auth.ensureLoggedIn(), function(req, res) {
+    fs.writeFileSync(root + req.body.path, req.body.text);
+    console.log(req.body.path + " saved");
+    res.redirect(`/webedit?file=${req.body.path}`);
   });
 
   // protected

@@ -13,7 +13,6 @@
     <script>
       {
         const p = location.href.match(/\/\/(.*?)(\/.*)/)[2];
-        console.log(p);
         localStorage.setItem("lastPath", p);
       }
     </script>
@@ -26,11 +25,12 @@
     <form action="/webedit" method="post">
       <p>
         <input type="submit" value="Submit" />
+        <%=date%>
       </p>
       <p>
         <input type="text" id="path" name="path" value="<%=editPath%>" />
       </p>
-      <textarea><%=fileContent%></textarea>
+      <textarea id="text" name="text" autocomplete="off"><%=fileContent%></textarea>
     </form>
 
     <div
