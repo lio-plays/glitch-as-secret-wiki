@@ -23,13 +23,14 @@
     <form action="/webedit" method="post">
       <p>
         <input type="submit" value="Submit" />
+        <button type="button" onclick="javascript:history.back()">Back</button>
         <a href="<%=backPath%>"><%=backPath%></a>
         <%=date%>
       </p>
       <p>
         <input type="text" id="path" name="path" value="<%=editPath%>" />
       </p>
-      <textarea id="text" name="text" autocomplete="off"><%=fileContent%></textarea>
+      <textarea id="text" name="text" autocomplete="off" style="width:100%;" rows = "20"><%=fileContent%></textarea>
     </form>
 
     <div
