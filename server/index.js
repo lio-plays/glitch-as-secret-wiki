@@ -1,13 +1,14 @@
-var express = require("express");
-var passport = require("passport");
-var Strategy = require("passport-local").Strategy;
-var db = require("./db");
+const express = require("express");
+const passport = require("passport");
+const Strategy = require("passport-local").Strategy;
+const db = require("./db");
 
 const fs = require("fs");
 const fsp = require("fs").promises;
 const auth = require("connect-ensure-login");
 const session = require("express-session");
-var FileStore = require("session-file-store")(session);
+const FileStore = require("session-file-store")(session);
+const pathTools = require("path");
 
 // Configure the local strategy for use by Passport.
 //
@@ -146,8 +147,20 @@ exports.run = function run(opts) {
 
   // webedit
 
+  function webeditRejected(res, path1) {
+    const path = pathTools.normalize(path1);
+    if (!path.match(/\/web-editable\//)) {
+      res.send(
+        'File not web-editable! <br> Go <button type="button" onclick="javascript:history.back()">Back</button> or <a href="/index.html">Home</a>'
+      );
+      return true;
+    }
+  }
   app.get("/webedit", auth.ensureLoggedIn(), async function(req, res) {
     const fn = req.query.file;
+    if (!req.query.forced && webeditRejected(res, fn)) {
+      return;
+    }
     const fc = await fsp.readFile(root + "/" + req.query.file, "utf8");
     res.render("webedit", {
       myUrl: req.path,
@@ -159,6 +172,9 @@ exports.run = function run(opts) {
   });
 
   app.post("/webedit", auth.ensureLoggedIn(), function(req, res) {
+    if (webeditRejected(res, req.body.path)) {
+      return;
+    }
     fs.writeFileSync(root + req.body.path, req.body.text);
     console.log(req.body.path + " saved");
     res.redirect(`/webedit?file=${req.body.path}`);
