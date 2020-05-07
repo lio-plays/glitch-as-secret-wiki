@@ -73,8 +73,9 @@ exports.run = function run(opts) {
   app.use(
     session({
       store: new FileStore({ path: root + "/.data/sessions" }),
-      secret: process.env.SECRET // same as password for now
-      // reSave, saveUninitialized default
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false
     })
   );
 

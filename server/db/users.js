@@ -1,5 +1,5 @@
 var records = [
-    { id: 1, username: 'o', password: process.env.SECRET, displayName: 'Owner', emails: [ { value: 'owner@example.com' } ] }
+    { id: 1, username: 'o', password: process.env.PASSWORD, displayName: 'Owner', emails: [ { value: 'owner@example.com' } ] }
 ];
 
 exports.findById = function(id, cb) {
