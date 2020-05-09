@@ -109,6 +109,22 @@ exports.run = function run(opts) {
     res.render("profile", { user: req.user });
   });
 
+  function esc(s) {
+    return s.toString().replace("<", "&lt;");
+  }
+
+  function sendNotFound(req, res) {
+    res
+      .status(404)
+      .send(
+        `Sorry can\'t find ${esc(
+          req.path
+        )}<hr><a href="/index.html">Home</a> <a href="https://glitch.com/edit/#!/${esc(
+          process.env.PROJECT_NAME
+        )}">Glitch</a>`
+      );
+  }
+
   async function html(req, res, subpath, notLoggedInContent) {
     const path = root + subpath;
     if (notLoggedInContent && !req.user) {
@@ -117,7 +133,12 @@ exports.run = function run(opts) {
         "utf8"
       );
     } else {
-      var content = await fsp.readFile(path, "utf8");
+      try {
+        var content = await fsp.readFile(path, "utf8");
+      } catch (e) {
+        sendNotFound(req, res);
+        return;
+      }
     }
     if (req.user) {
       var login = `<a href="/profile"><b>${req.user.username.replace(
@@ -136,7 +157,12 @@ exports.run = function run(opts) {
     if (notLoggedInContent && !req.user) {
       var content = notLoggedInContent;
     } else {
-      var content = await fsp.readFile(path, "utf8");
+      try {
+        var content = await fsp.readFile(path, "utf8");
+      } catch (e) {
+        sendNotFound(req, res);
+        return;
+      }
     }
     res.type(type);
     res.send(content);
@@ -211,19 +237,16 @@ exports.run = function run(opts) {
 
   app.use(function(err, req, res, next) {
     console.error(err.stack);
-    if (!req.user) {
-      var msg = 'Something broke! <a href="/index.html">Home</a>';
-    } else {
-      var msg = `Something broke! <a href="/index.html">Home</a><hr>You are logged in, the error:<pre>${err.stack}</pre>`;
+    let msg = `Something broke! <a href="/index.html">Home</a> <a href="https://glitch.com/edit/#!/${process.env.PROJECT_NAME}">Glitch</a>`;
+    if (req.user) {
+      msg += `<hr>You are logged in, the error:<pre>${err.stack
+        .toString()
+        .replace("<", "&lt;")}</pre>`;
     }
     res.status(500).send(msg);
   });
 
-  app.use(function(req, res, next) {
-    res
-      .status(404)
-      .send('Sorry can\'t find that! <a href="/index.html">Home</a>');
-  });
+  app.use(sendNotFound);
 
   app.listen(3000);
 };
