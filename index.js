@@ -1,10 +1,42 @@
-const path = location.pathname;
 const htmltag = document.querySelector("#html");
+const path = location.pathname;
 
-async function fillPage() {
+try {
   // root ("/") redirects to last page.
   // because glitch loads "/" at refresh
+  if (path === "/" && location.hash === "") {
+    const lastpath = localStorage.getItem("lastPath");
+    if (
+      lastpath === "/" || // just in case. would lead to recursion.
+      lastpath === null
+    ) {
+      location.replace("index.html");
+    } else {
+      location.replace(lastpath);
+      // with "/#something" no happens but location.hash is changed, so  fillPage works
+      if (lastpath.match(/^\/#/)) {
+        fillFirstPage();
+      }
+    }
+  } else {
+    fillFirstPage();
+  }
+} catch (e) {
+  console.log(e);
+  htmltag.innerHTML = "Something went wrong";
+}
 
+function fillFirstPage() {
+  fillPage();
+  onhashchange = () => fillPage();
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "visible") {
+      fillPage();
+    }
+  });
+}
+
+async function fillPage() {
   const urltag = document.querySelector("#url");
   const project = location.host.match(/(.*?)\./)[1];
 
@@ -45,32 +77,4 @@ async function fillPage() {
   const md = window.markdownit();
   const result = md.render(src);
   htmltag.innerHTML = result;
-}
-
-function fillFirstPage() {
-  onhashchange = () => fillPage();
-  fillPage();
-}
-
-try {
-  if (path === "/" && location.hash === "") {
-    const lastpath = localStorage.getItem("lastPath");
-    if (
-      lastpath === "/" || // just in case. would lead to recursion.
-      lastpath === null
-    ) {
-      location.replace("index.html");
-    } else {
-      location.replace(lastpath);
-      // with "/#something" no happens but location.hash is changed, so  fillPage works
-      if (lastpath.match(/^\/#/)) {
-        fillFirstPage();
-      }
-    }
-  } else {
-    fillFirstPage();
-  }
-} catch (e) {
-  console.log(e);
-  htmltag.innerHTML = "Something went wrong";
 }
