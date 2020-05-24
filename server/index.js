@@ -75,7 +75,12 @@ exports.run = function run(opts) {
       store: new FileStore({ path: root + "/.data/sessions" }),
       secret: process.env.SESSION_SECRET,
       resave: false,
-      saveUninitialized: false
+      saveUninitialized: false,
+      // to survive browser restart
+      cookie: {
+        maxAge: 2 * 24 * 60 * 60 * 1000,
+        rolling: true
+      }
     })
   );
 
